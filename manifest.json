@@ -1,0 +1,10 @@
+{
+  "name": "StudyMate",
+  "short_name": "StudyMate",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f4f6f8",
+  "theme_color": "#20242a",
+  "description": "A personal study planner and productivity app",
+  "icons": []
+}

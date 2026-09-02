@@ -1,0 +1,2372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>StudyMate</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#20242a">
+
+<style>
+*{box-sizing:border-box}
+
+body{
+margin:0;
+padding:12px 12px 90px;
+font-family:Arial,sans-serif;
+background:#f4f6f8;
+color:#222
+}
+
+.container{max-width:1050px;margin:auto}
+
+header{
+background:linear-gradient(135deg,#20242a,#59636f);
+color:white;
+text-align:center;
+padding:25px;
+border-radius:18px
+}
+
+h1{font-size:36px;margin:5px}
+
+.card,.stat,.welcome,nav,.calendar{
+background:white;
+border-radius:14px;
+padding:18px;
+margin:15px 0;
+box-shadow:0 3px 14px #0001
+}
+
+nav{
+display:flex;
+gap:8px;
+overflow:auto
+}
+
+nav a{
+text-decoration:none;
+color:#222;
+padding:8px;
+white-space:nowrap
+}
+
+.dashboard{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:12px
+}
+
+.stat{text-align:center}
+
+.stat span{
+display:block;
+font-size:25px;
+font-weight:bold
+}
+
+.today-box{
+background:#f7f8fa;
+padding:15px;
+border-radius:12px
+}
+
+.today-date{
+font-size:24px;
+font-weight:bold
+}
+
+.status{
+margin-top:8px;
+font-weight:bold
+}
+
+input,select,textarea,button{
+padding:11px;
+border:1px solid #ccd2da;
+border-radius:8px;
+font-size:15px
+}
+
+button{
+cursor:pointer;
+font-weight:bold;
+background:#eee
+}
+
+.input-row{
+display:flex;
+gap:8px;
+margin:8px 0
+}
+
+.input-row>*{flex:1}
+
+textarea{
+width:100%;
+min-height:150px
+}
+
+.quick-actions{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:10px
+}
+
+.quick-actions button{
+padding:16px 8px
+}
+
+.filter-row{
+display:flex;
+gap:7px;
+overflow:auto;
+margin:10px 0
+}
+
+.filter-row button{white-space:nowrap}
+
+.filter-row button.active{
+font-weight:bold;
+border:2px solid #222
+}
+
+.subject-filter{
+width:100%;
+margin:8px 0
+}
+
+.progress-bar,.mini-bar{
+height:15px;
+background:#ddd;
+border-radius:20px;
+overflow:hidden
+}
+
+.progress-bar div,.mini-fill{
+height:100%;
+width:0%;
+background:#555
+}
+
+#taskList{
+padding:0;
+list-style:none
+}
+
+#taskList li{
+display:flex;
+gap:8px;
+align-items:center;
+background:#f7f8fa;
+padding:10px;
+margin:7px 0;
+border-radius:8px
+}
+
+#taskList li span{flex:1}
+
+.overdue{
+border-left:5px solid #777
+}
+
+.priority{
+padding:4px 8px;
+border-radius:12px;
+font-size:12px;
+font-weight:bold
+}
+
+.high{background:#ffd9d9}
+.medium{background:#fff0bd}
+.low{background:#dff3df}
+
+.table-container{overflow:auto}
+
+table{
+width:100%;
+border-collapse:collapse
+}
+
+th,td{
+padding:9px;
+border:1px solid #ddd;
+text-align:center
+}
+
+#timerDisplay{
+text-align:center;
+font-size:55px;
+font-weight:bold;
+margin:20px
+}
+
+.timer-buttons{text-align:center}
+
+.progress-grid,.achievement-grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:12px
+}
+
+.big-progress,.achievement{
+background:#f7f8fa;
+padding:15px;
+border-radius:12px
+}
+
+.big-percent{
+text-align:center;
+font-size:45px;
+font-weight:bold
+}
+
+.achievement.locked{opacity:.5}
+
+.calendar-header{
+display:flex;
+justify-content:space-between;
+align-items:center
+}
+
+.calendar-grid{
+display:grid;
+grid-template-columns:repeat(7,1fr);
+gap:5px
+}
+
+.calendar-day-name{
+text-align:center;
+font-weight:bold;
+padding:6px
+}
+
+.calendar-day{
+min-height:65px;
+padding:7px;
+background:#f7f8fa;
+border-radius:8px;
+cursor:pointer
+}
+
+.calendar-day.today{
+border:2px solid #555
+}
+
+.calendar-day small{
+display:block;
+margin-top:5px
+}
+
+.bottom-nav{
+position:fixed;
+bottom:8px;
+left:50%;
+transform:translateX(-50%);
+width:95%;
+max-width:600px;
+background:white;
+border-radius:18px;
+box-shadow:0 3px 20px #0003;
+display:flex;
+justify-content:space-around;
+padding:7px;
+z-index:5
+}
+
+.bottom-nav a{
+text-decoration:none;
+color:#333;
+text-align:center;
+font-size:11px
+}
+
+.nav-icon{
+display:block;
+font-size:20px
+}
+
+body.dark{
+background:#111;
+color:#eee
+}
+
+body.dark .card,
+body.dark .stat,
+body.dark .welcome,
+body.dark nav,
+body.dark .calendar,
+body.dark .bottom-nav,
+body.dark .today-box{
+background:#1c2229;
+color:#eee
+}
+
+body.dark nav a,
+body.dark .bottom-nav a{
+color:#eee
+}
+
+body.dark input,
+body.dark select,
+body.dark textarea{
+background:#252c34;
+color:white
+}
+
+body.dark .calendar-day,
+body.dark .big-progress,
+body.dark .achievement,
+body.dark #taskList li{
+background:#252c34
+}
+
+@media(max-width:650px){
+
+.dashboard{
+grid-template-columns:1fr 1fr
+}
+
+.quick-actions{
+grid-template-columns:1fr 1fr
+}
+
+.progress-grid,
+.achievement-grid{
+grid-template-columns:1fr
+}
+
+.input-row{
+flex-direction:column
+}
+
+.input-row>*{width:100%}
+
+.calendar-day{
+min-height:55px;
+font-size:12px
+}
+
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<header>
+<h1>📚 StudyMate</h1>
+<p>Study smarter. Stay organized. Track your progress.</p>
+<button onclick="toggleDark()">🌙 Dark Mode</button>
+</header>
+
+<section class="welcome">
+
+<h2 id="welcome">👋 Welcome to StudyMate</h2>
+
+<div class="input-row">
+<input id="name" placeholder="Enter your name">
+<button onclick="saveName()">Save Name</button>
+</div>
+
+</section>
+
+<section class="card">
+
+<h2>📌 Today</h2>
+
+<div class="today-box">
+
+<div class="today-date" id="todayDate"></div>
+
+<div class="status" id="todayStatus"></div>
+
+<p>
+Today's tasks:
+<b id="todayTasks">0</b>
+</p>
+
+<p>
+Completed today:
+<b id="todayDone">0</b>
+</p>
+
+</div>
+
+</section>
+
+<section class="card">
+
+<h2>⚡ Quick Actions</h2>
+
+<div class="quick-actions">
+
+<button onclick="quickTask()">➕<br>Add Task</button>
+<button onclick="startQuickTimer()">⏱️<br>Start Timer</button>
+<button onclick="quickNote()">📝<br>Write Note</button>
+<button onclick="quickSchedule()">🗓️<br>Timetable</button>
+
+</div>
+
+</section>
+
+<nav>
+
+<a href="#today">📌 Today</a>
+<a href="#calendar">📅 Calendar</a>
+<a href="#subjects">📚 Subjects</a>
+<a href="#tasks">✅ Tasks</a>
+<a href="#timer">⏱️ Timer</a>
+<a href="#timetable">🗓️ Timetable</a>
+<a href="#progress">📊 Progress</a>
+
+</nav>
+
+<section class="dashboard">
+
+<div class="stat">
+<span id="total">0</span>
+Tasks
+</div>
+
+<div class="stat">
+<span id="done">0</span>
+Completed
+</div>
+
+<div class="stat">
+<span id="percent">0%</span>
+Progress
+</div>
+
+<div class="stat">
+<span id="streak">0 🔥</span>
+Streak
+</div>
+
+</section>
+
+<section class="card" id="calendar">
+
+<h2>📅 Study Calendar</h2>
+
+<div class="calendar">
+
+<div class="calendar-header">
+
+<button onclick="changeMonth(-1)">←</button>
+
+<h2 id="monthTitle"></h2>
+
+<button onclick="changeMonth(1)">→</button>
+
+</div>
+
+<div class="calendar-grid" id="cal"></div>
+
+<p id="selected">Select a date to see tasks.</p>
+
+</div>
+
+</section>
+
+<section class="card" id="subjects">
+
+<h2>📚 My Subjects</h2>
+
+<div class="input-row">
+
+<input id="subject" placeholder="Enter subject">
+
+<button onclick="addSubject()">Add Subject</button>
+
+</div>
+
+<div id="subjectList"></div>
+
+</section>
+
+<section class="card">
+
+<h2>🎯 Daily Study Goal</h2>
+
+<div class="input-row">
+
+<input id="goalInput" type="number" placeholder="Minutes">
+
+<button onclick="setGoal()">Set Goal</button>
+
+</div>
+
+<p>
+Today:
+<b id="todayMin">0</b>
+minutes /
+<b id="goal">60</b>
+minutes
+</p>
+
+<div class="progress-bar">
+<div id="goalBar"></div>
+</div>
+
+</section>
+
+<section class="card" id="tasks">
+
+<h2>✅ Tasks</h2>
+
+<div class="input-row">
+
+<select id="taskSubject">
+<option value="">Subject</option>
+</select>
+
+<input id="task" placeholder="Enter task">
+
+<input id="taskDate" type="date">
+
+<select id="taskPriority">
+
+<option value="Medium">🟡 Medium</option>
+<option value="High">🔴 High</option>
+<option value="Low">🟢 Low</option>
+
+</select>
+
+<button onclick="addTask()">Add</button>
+
+</div>
+
+<input
+id="search"
+placeholder="🔍 Search tasks..."
+oninput="showTasks()"
+>
+
+<select
+id="subjectFilter"
+class="subject-filter"
+onchange="setSubjectFilter(this.value)"
+>
+
+<option value="all">📚 All Subjects</option>
+
+</select>
+
+<div class="filter-row">
+
+<button id="filterAll" class="active" onclick="setFilter('all')">
+All
+</button>
+
+<button id="filterHigh" onclick="setFilter('High')">
+🔴 High
+</button>
+
+<button id="filterMedium" onclick="setFilter('Medium')">
+🟡 Medium
+</button>
+
+<button id="filterLow" onclick="setFilter('Low')">
+🟢 Low
+</button>
+
+<button id="filterCompleted" onclick="setFilter('completed')">
+✅ Completed
+</button>
+
+<button id="filterPending" onclick="setFilter('pending')">
+⏳ Pending
+</button>
+
+</div>
+
+<ul id="taskList"></ul>
+
+<button onclick="clearTasks()">Clear All Tasks</button>
+
+</section>
+
+<section class="card" id="timer">
+
+<h2>⏱️ Study Timer</h2>
+
+<div id="timerDisplay">25:00</div>
+
+<div class="timer-buttons">
+
+<button onclick="startTimer()">Start</button>
+<button onclick="pauseTimer()">Pause</button>
+<button onclick="resetTimer()">Reset</button>
+
+</div>
+
+</section>
+
+<section class="card" id="timetable">
+
+<h2>🗓️ Timetable</h2>
+
+<div class="input-row">
+
+<select id="day">
+
+<option value="">Day</option>
+<option>Monday</option>
+<option>Tuesday</option>
+<option>Wednesday</option>
+<option>Thursday</option>
+<option>Friday</option>
+<option>Saturday</option>
+<option>Sunday</option>
+
+</select>
+
+<input id="time" type="time">
+
+<input id="tsubject" placeholder="Subject">
+
+<input id="topic" placeholder="Topic">
+
+<button onclick="addSchedule()">Add</button>
+
+</div>
+
+<div class="table-container">
+
+<table>
+
+<thead>
+
+<tr>
+<th>Day</th>
+<th>Time</th>
+<th>Subject</th>
+<th>Topic</th>
+<th>Action</th>
+</tr>
+
+</thead>
+
+<tbody id="schedule"></tbody>
+
+</table>
+
+</div>
+
+</section>
+
+<section class="card" id="progress">
+
+<h2>📊 Progress</h2>
+
+<div class="progress-grid">
+
+<div class="big-progress">
+
+<h3>Task Progress</h3>
+
+<div class="big-percent" id="overall">0%</div>
+
+<div class="progress-bar">
+<div id="overallBar"></div>
+</div>
+
+</div>
+
+<div class="big-progress">
+
+<h3>🎯 Study Goal</h3>
+
+<div class="big-percent" id="goalPercent">0%</div>
+
+<div class="progress-bar">
+<div id="goalProgress"></div>
+</div>
+
+</div>
+
+</div>
+
+<h3>📚 Subject Progress</h3>
+
+<div id="subjectProgress"></div>
+
+</section>
+
+<section class="card">
+
+<h2>🔔 Reminders</h2>
+
+<div class="input-row">
+
+<input id="reminder" placeholder="Reminder">
+
+<input id="reminderTime" type="time">
+
+<button onclick="addReminder()">Add</button>
+
+</div>
+
+<div id="reminders"></div>
+
+</section>
+
+<section class="card">
+
+<h2>📝 Notes</h2>
+
+<textarea id="notes" placeholder="Write your notes here..."></textarea>
+
+<button onclick="saveNotes()">Save Notes</button>
+
+</section>
+
+<section class="card">
+
+<h2>🏆 Achievements</h2>
+
+<div class="achievement-grid">
+
+<div class="achievement" id="a1">
+🌱 <b>First Step</b>
+<p>Complete 1 task</p>
+</div>
+
+<div class="achievement" id="a2">
+⭐ <b>Getting Started</b>
+<p>Complete 5 tasks</p>
+</div>
+
+<div class="achievement" id="a3">
+🔥 <b>On Fire</b>
+<p>Reach 3-day streak</p>
+</div>
+
+<div class="achievement" id="a4">
+🏆 <b>Goal Crusher</b>
+<p>Complete daily goal</p>
+</div>
+
+<div class="achievement" id="a5">
+🚀 <b>Study Machine</b>
+<p>Complete 10 tasks</p>
+</div>
+
+<div class="achievement" id="a6">
+👑 <b>Study Champion</b>
+<p>Reach 7-day streak</p>
+</div>
+
+</div>
+
+</section>
+
+<section class="card">
+
+<h2>🔥 Study Streak</h2>
+
+<div class="big-percent" id="bigStreak">0</div>
+
+<p id="streakText">Start studying today!</p>
+
+<button onclick="studyToday()">🔥 I Studied Today</button>
+
+</section>
+
+<section class="card">
+
+<h2>💾 Backup</h2>
+
+<button onclick="backup()">📥 Backup</button>
+
+<button onclick="document.getElementById('restore').click()">
+📤 Restore
+</button>
+
+<input
+id="restore"
+type="file"
+accept=".json"
+style="display:none"
+>
+
+</section>
+
+</div>
+
+<div class="bottom-nav">
+
+<a href="#calendar">
+<span class="nav-icon">📅</span>
+Calendar
+</a>
+
+<a href="#tasks">
+<span class="nav-icon">✅</span>
+Tasks
+</a>
+
+<a href="#timer">
+<span class="nav-icon">⏱️</span>
+Timer
+</a>
+
+<a href="#timetable">
+<span class="nav-icon">🗓️</span>
+Plan
+</a>
+
+<a href="#progress">
+<span class="nav-icon">📊</span>
+Progress
+</a>
+
+</div>
+
+<script>
+
+let subjects=JSON.parse(
+localStorage.getItem("subjects")||"[]"
+);
+
+let tasks=JSON.parse(
+localStorage.getItem("tasks")||"[]"
+);
+
+let schedules=JSON.parse(
+localStorage.getItem("schedules")||"[]"
+);
+
+let reminders=JSON.parse(
+localStorage.getItem("reminders")||"[]"
+);
+
+let goalMinutes=
++localStorage.getItem("goalMinutes")||60;
+
+let todayMinutes=
++localStorage.getItem("todayMinutes")||0;
+
+let streak=
++localStorage.getItem("streak")||0;
+
+let lastStudy=
+localStorage.getItem("lastStudy")||"";
+
+let calDate=new Date();
+
+let timerSeconds=1500;
+
+let timerInterval=null;
+
+let currentFilter="all";
+
+let currentSubjectFilter="all";
+
+
+function save(){
+
+localStorage.setItem("subjects",JSON.stringify(subjects));
+localStorage.setItem("tasks",JSON.stringify(tasks));
+localStorage.setItem("schedules",JSON.stringify(schedules));
+localStorage.setItem("reminders",JSON.stringify(reminders));
+localStorage.setItem("goalMinutes",goalMinutes);
+localStorage.setItem("todayMinutes",todayMinutes);
+localStorage.setItem("streak",streak);
+localStorage.setItem("lastStudy",lastStudy);
+
+}
+
+
+function todayString(){
+
+return new Date()
+.toISOString()
+.slice(0,10);
+
+}
+
+
+function showToday(){
+
+let now=new Date();
+
+let options={
+weekday:"long",
+year:"numeric",
+month:"long",
+day:"numeric"
+};
+
+document.getElementById("todayDate")
+.textContent=
+now.toLocaleDateString(
+undefined,
+options
+);
+
+
+let today=todayString();
+
+let todayTasks=
+tasks.filter(t=>t.date===today);
+
+let todayDone=
+todayTasks.filter(t=>t.completed);
+
+
+document.getElementById("todayTasks")
+.textContent=todayTasks.length;
+
+document.getElementById("todayDone")
+.textContent=todayDone.length;
+
+
+let status=
+document.getElementById("todayStatus");
+
+
+if(todayTasks.length===0){
+
+status.textContent=
+"📚 No tasks scheduled for today.";
+
+}
+
+else if(todayDone.length===todayTasks.length){
+
+status.textContent=
+"🎉 All today's tasks are completed!";
+
+}
+
+else{
+
+status.textContent=
+"💪 Keep going! You have "+
+(todayTasks.length-todayDone.length)+
+" task(s) remaining.";
+
+}
+
+}
+
+
+function saveName(){
+
+let n=
+document.getElementById("name")
+.value.trim();
+
+if(n){
+
+localStorage.setItem("name",n);
+
+document.getElementById("welcome")
+.textContent=
+"👋 Welcome, "+n+"!";
+
+}
+
+}
+
+
+function addSubject(){
+
+let x=
+document.getElementById("subject")
+.value.trim();
+
+if(!x)return;
+
+if(!subjects.includes(x))
+subjects.push(x);
+
+document.getElementById("subject").value="";
+
+save();
+
+showSubjects();
+
+updateSelectors();
+
+}
+
+
+function showSubjects(){
+
+let box=
+document.getElementById("subjectList");
+
+box.innerHTML="";
+
+subjects.forEach((s,i)=>{
+
+let b=document.createElement("button");
+
+b.textContent=s+" ×";
+
+b.onclick=()=>{
+
+subjects.splice(i,1);
+
+save();
+
+showSubjects();
+
+updateSelectors();
+
+};
+
+box.appendChild(b);
+
+});
+
+}
+
+
+function updateSelectors(){
+
+let s=
+document.getElementById("taskSubject");
+
+s.innerHTML=
+'<option value="">Subject</option>';
+
+subjects.forEach(x=>{
+
+let o=document.createElement("option");
+
+o.value=x;
+o.textContent=x;
+
+s.appendChild(o);
+
+});
+
+
+let filter=
+document.getElementById("subjectFilter");
+
+filter.innerHTML=
+'<option value="all">📚 All Subjects</option>';
+
+subjects.forEach(x=>{
+
+let o=document.createElement("option");
+
+o.value=x;
+
+o.textContent="📖 "+x;
+
+filter.appendChild(o);
+
+});
+
+}
+
+
+function addTask(){
+
+let text=
+document.getElementById("task")
+.value.trim();
+
+let subject=
+document.getElementById("taskSubject")
+.value;
+
+let date=
+document.getElementById("taskDate")
+.value;
+
+let priority=
+document.getElementById("taskPriority")
+.value;
+
+if(!text)return;
+
+tasks.push({
+
+text:text,
+subject:subject,
+date:date,
+priority:priority,
+completed:false
+
+});
+
+document.getElementById("task").value="";
+
+save();
+
+showTasks();
+
+calendar();
+
+showToday();
+
+}
+
+
+function setFilter(filter){
+
+currentFilter=filter;
+
+document
+.querySelectorAll(".filter-row button")
+.forEach(b=>b.classList.remove("active"));
+
+
+let id=
+filter==="all"?"filterAll":
+filter==="High"?"filterHigh":
+filter==="Medium"?"filterMedium":
+filter==="Low"?"filterLow":
+filter==="completed"?"filterCompleted":
+"filterPending";
+
+
+document.getElementById(id)
+.classList.add("active");
+
+showTasks();
+
+}
+
+
+function setSubjectFilter(subject){
+
+currentSubjectFilter=subject;
+
+showTasks();
+
+}
+
+
+function taskMatchesFilter(t){
+
+if(currentFilter==="all")
+return true;
+
+if(currentFilter==="completed")
+return t.completed;
+
+if(currentFilter==="pending")
+return !t.completed;
+
+return t.priority===currentFilter;
+
+}
+
+
+function showTasks(){
+
+let list=
+document.getElementById("taskList");
+
+list.innerHTML="";
+
+let search=
+document.getElementById("search")
+.value.toLowerCase();
+
+let today=todayString();
+
+
+tasks.forEach((t,i)=>{
+
+if(!taskMatchesFilter(t))
+return;
+
+if(
+currentSubjectFilter!=="all" &&
+t.subject!==currentSubjectFilter
+)
+return;
+
+if(
+search &&
+!t.text.toLowerCase().includes(search)
+)
+return;
+
+
+let li=
+document.createElement("li");
+
+
+if(
+t.date &&
+t.date<today &&
+!t.completed
+){
+
+li.classList.add("overdue");
+
+}
+
+
+let check=
+document.createElement("input");
+
+check.type="checkbox";
+
+check.checked=t.completed;
+
+check.onchange=()=>{
+
+t.completed=check.checked;
+
+save();
+
+showTasks();
+
+showToday();
+
+};
+
+
+let span=
+document.createElement("span");
+
+span.textContent=
+t.text+
+(t.subject?" — "+t.subject:"")+
+(t.date?" 📅 "+t.date:"");
+
+if(t.completed)
+
+span.style.textDecoration=
+"line-through";
+
+
+let priority=
+document.createElement("b");
+
+priority.className=
+"priority";
+
+
+if(t.priority==="High"){
+
+priority.textContent="🔴 High";
+
+priority.classList.add("high");
+
+}
+else if(t.priority==="Low"){
+
+priority.textContent="🟢 Low";
+
+priority.classList.add("low");
+
+}
+else{
+
+priority.textContent="🟡 Medium";
+
+priority.classList.add("medium");
+
+}
+
+
+let edit=
+document.createElement("button");
+
+edit.textContent="✏️ Edit";
+
+
+edit.onclick=()=>{
+
+let newText=
+prompt("Edit task:",t.text);
+
+if(newText===null)return;
+
+newText=newText.trim();
+
+if(!newText)return;
+
+
+let newSubject=
+prompt(
+"Edit subject:",
+t.subject||""
+);
+
+if(newSubject===null)return;
+
+
+let newDate=
+prompt(
+"Edit date (YYYY-MM-DD):",
+t.date||""
+);
+
+if(newDate===null)return;
+
+
+let newPriority=
+prompt(
+"Priority: High, Medium or Low",
+t.priority
+);
+
+if(newPriority===null)return;
+
+newPriority=newPriority.trim();
+
+
+if(
+newPriority!=="High" &&
+newPriority!=="Medium" &&
+newPriority!=="Low"
+){
+
+alert(
+"Please enter High, Medium or Low."
+);
+
+return;
+
+}
+
+
+t.text=newText;
+t.subject=newSubject.trim();
+t.date=newDate.trim();
+t.priority=newPriority;
+
+save();
+
+showTasks();
+
+calendar();
+
+showToday();
+
+};
+
+
+let del=
+document.createElement("button");
+
+del.textContent="Delete";
+
+del.onclick=()=>{
+
+tasks.splice(i,1);
+
+save();
+
+showTasks();
+
+calendar();
+
+showToday();
+
+};
+
+
+li.append(
+check,
+span,
+priority,
+edit,
+del
+);
+
+list.appendChild(li);
+
+});
+
+updateProgress();
+
+}
+
+
+function clearTasks(){
+
+if(confirm("Delete all tasks?")){
+
+tasks=[];
+
+save();
+
+showTasks();
+
+calendar();
+
+showToday();
+
+}
+
+}
+
+
+function updateProgress(){
+
+let total=tasks.length;
+
+let done=
+tasks.filter(x=>x.completed).length;
+
+let p=
+total?
+Math.round(done/total*100):
+0;
+
+
+document.getElementById("total")
+.textContent=total;
+
+document.getElementById("done")
+.textContent=done;
+
+document.getElementById("percent")
+.textContent=p+"%";
+
+document.getElementById("overall")
+.textContent=p+"%";
+
+document.getElementById("overallBar")
+.style.width=p+"%";
+
+
+document.getElementById("todayMin")
+.textContent=todayMinutes;
+
+document.getElementById("goal")
+.textContent=goalMinutes;
+
+
+let gp=Math.min(
+100,
+Math.round(
+todayMinutes/goalMinutes*100
+)
+);
+
+
+document.getElementById("goalPercent")
+.textContent=gp+"%";
+
+document.getElementById("goalBar")
+.style.width=gp+"%";
+
+document.getElementById("goalProgress")
+.style.width=gp+"%";
+
+
+subjectProgress();
+
+achievements();
+
+}
+
+
+function subjectProgress(){
+
+let box=
+document.getElementById("subjectProgress");
+
+box.innerHTML="";
+
+
+subjects.forEach(s=>{
+
+let all=
+tasks.filter(t=>t.subject===s);
+
+let done=
+all.filter(t=>t.completed).length;
+
+let p=
+all.length?
+Math.round(done/all.length*100):
+0;
+
+
+box.innerHTML+=
+
+"<p><b>"+
+s+
+"</b> — "+
+done+"/"+all.length+
+" ("+p+"%)</p>"+
+
+"<div class='mini-bar'>"+
+"<div class='mini-fill' style='width:"+
+p+
+"%'></div></div>";
+
+});
+
+}
+
+
+function setGoal(){
+
+let x=
++document.getElementById("goalInput")
+.value;
+
+if(x>0){
+
+goalMinutes=x;
+
+save();
+
+updateProgress();
+
+}
+
+}
+
+
+function startTimer(){
+
+if(timerInterval)return;
+
+
+timerInterval=setInterval(()=>{
+
+if(timerSeconds>0){
+
+timerSeconds--;
+
+showTimer();
+
+}
+else{
+
+pauseTimer();
+
+todayMinutes+=25;
+
+studyToday();
+
+save();
+
+updateProgress();
+
+alert(
+"🎉 25-minute study session completed!"
+);
+
+}
+
+},1000);
+
+}
+
+
+function startQuickTimer(){
+
+document.getElementById("timer")
+.scrollIntoView({
+behavior:"smooth"
+});
+
+startTimer();
+
+}
+
+
+function pauseTimer(){
+
+clearInterval(timerInterval);
+
+timerInterval=null;
+
+}
+
+
+function resetTimer(){
+
+pauseTimer();
+
+timerSeconds=1500;
+
+showTimer();
+
+}
+
+
+function showTimer(){
+
+let m=
+Math.floor(timerSeconds/60);
+
+let s=
+timerSeconds%60;
+
+document.getElementById("timerDisplay")
+.textContent=
+String(m).padStart(2,"0")+
+":"+
+String(s).padStart(2,"0");
+
+}
+
+
+function quickTask(){
+
+document.getElementById("tasks")
+.scrollIntoView({
+behavior:"smooth"
+});
+
+setTimeout(()=>{
+document.getElementById("task").focus();
+},500);
+
+}
+
+
+function quickNote(){
+
+document.getElementById("notes")
+.scrollIntoView({
+behavior:"smooth"
+});
+
+setTimeout(()=>{
+document.getElementById("notes").focus();
+},500);
+
+}
+
+
+function quickSchedule(){
+
+document.getElementById("timetable")
+.scrollIntoView({
+behavior:"smooth"
+});
+
+}
+
+
+function addSchedule(){
+
+let d=
+document.getElementById("day").value;
+
+let t=
+document.getElementById("time").value;
+
+let s=
+document.getElementById("tsubject")
+.value.trim();
+
+let topic=
+document.getElementById("topic")
+.value.trim();
+
+
+if(!d||!t||!s||!topic){
+
+alert(
+"Fill all timetable fields."
+);
+
+return;
+
+}
+
+
+schedules.push({
+
+day:d,
+time:t,
+subject:s,
+topic:topic
+
+});
+
+
+save();
+
+showSchedule();
+
+
+document.getElementById("day").value="";
+document.getElementById("time").value="";
+document.getElementById("tsubject").value="";
+document.getElementById("topic").value="";
+
+}
+
+
+function showSchedule(){
+
+let box=
+document.getElementById("schedule");
+
+box.innerHTML="";
+
+
+schedules.forEach((x,i)=>{
+
+let r=
+document.createElement("tr");
+
+
+let day=
+document.createElement("td");
+
+day.textContent=x.day;
+
+
+let time=
+document.createElement("td");
+
+time.textContent=x.time;
+
+
+let subject=
+document.createElement("td");
+
+subject.textContent=x.subject;
+
+
+let topic=
+document.createElement("td");
+
+topic.textContent=x.topic;
+
+
+let action=
+document.createElement("td");
+
+
+let edit=
+document.createElement("button");
+
+edit.textContent="✏️ Edit";
+
+
+edit.onclick=()=>{
+
+let newDay=
+prompt(
+"Edit day:",
+x.day
+);
+
+if(newDay===null)return;
+
+
+let newTime=
+prompt(
+"Edit time:",
+x.time
+);
+
+if(newTime===null)return;
+
+
+let newSubject=
+prompt(
+"Edit subject:",
+x.subject
+);
+
+if(newSubject===null)return;
+
+
+let newTopic=
+prompt(
+"Edit topic:",
+x.topic
+);
+
+if(newTopic===null)return;
+
+
+if(
+!newDay.trim()||
+!newTime.trim()||
+!newSubject.trim()||
+!newTopic.trim()
+){
+
+alert(
+"All fields are required."
+);
+
+return;
+
+}
+
+
+x.day=newDay.trim();
+
+x.time=newTime.trim();
+
+x.subject=newSubject.trim();
+
+x.topic=newTopic.trim();
+
+save();
+
+showSchedule();
+
+};
+
+
+let del=
+document.createElement("button");
+
+del.textContent="Delete";
+
+
+del.onclick=()=>{
+
+schedules.splice(i,1);
+
+save();
+
+showSchedule();
+
+};
+
+
+action.append(edit,del);
+
+r.append(
+day,
+time,
+subject,
+topic,
+action
+);
+
+box.appendChild(r);
+
+});
+
+}
+
+
+function addReminder(){
+
+let text=
+document.getElementById("reminder")
+.value.trim();
+
+let time=
+document.getElementById("reminderTime")
+.value;
+
+
+if(!text||!time)return;
+
+
+reminders.push({
+text:text,
+time:time
+});
+
+save();
+
+showReminders();
+
+
+document.getElementById("reminder").value="";
+
+document.getElementById("reminderTime").value="";
+
+}
+
+
+function showReminders(){
+
+let box=
+document.getElementById("reminders");
+
+box.innerHTML="";
+
+
+reminders.forEach((r,i)=>{
+
+let p=
+document.createElement("p");
+
+p.textContent=
+"🔔 "+r.time+" — "+r.text+" ";
+
+
+let b=
+document.createElement("button");
+
+b.textContent="Delete";
+
+
+b.onclick=()=>{
+
+reminders.splice(i,1);
+
+save();
+
+showReminders();
+
+};
+
+
+p.appendChild(b);
+
+box.appendChild(p);
+
+});
+
+}
+
+
+function saveNotes(){
+
+localStorage.setItem(
+"notes",
+document.getElementById("notes").value
+);
+
+alert("📝 Notes saved!");
+
+}
+
+
+function studyToday(){
+
+let today=todayString();
+
+
+if(lastStudy===today)
+return;
+
+
+let y=new Date();
+
+y.setDate(y.getDate()-1);
+
+
+let yesterday=
+y.toISOString().slice(0,10);
+
+
+streak=
+lastStudy===yesterday?
+streak+1:
+1;
+
+
+lastStudy=today;
+
+save();
+
+showStreak();
+
+achievements();
+
+}
+
+
+function showStreak(){
+
+document.getElementById("streak")
+.textContent=streak+" 🔥";
+
+document.getElementById("bigStreak")
+.textContent=streak;
+
+document.getElementById("streakText")
+.textContent=
+streak?
+"🔥 Keep your streak alive!":
+"Start studying today!";
+
+}
+
+
+function achievements(){
+
+let done=
+tasks.filter(t=>t.completed).length;
+
+
+let values=[
+done>=1,
+done>=5,
+streak>=3,
+todayMinutes>=goalMinutes,
+done>=10,
+streak>=7
+];
+
+
+values.forEach((v,i)=>{
+
+document.getElementById("a"+(i+1))
+.classList.toggle(
+"locked",
+!v
+);
+
+});
+
+}
+
+
+function changeMonth(n){
+
+calDate.setMonth(
+calDate.getMonth()+n
+);
+
+calendar();
+
+}
+
+
+function calendar(){
+
+let year=
+calDate.getFullYear();
+
+let mon=
+calDate.getMonth();
+
+
+let names=[
+"January","February","March",
+"April","May","June",
+"July","August","September",
+"October","November","December"
+];
+
+
+document.getElementById("monthTitle")
+.textContent=
+names[mon]+" "+year;
+
+
+let box=
+document.getElementById("cal");
+
+box.innerHTML="";
+
+
+[
+"Sun","Mon","Tue",
+"Wed","Thu","Fri","Sat"
+].forEach(d=>{
+
+let x=
+document.createElement("div");
+
+x.className=
+"calendar-day-name";
+
+x.textContent=d;
+
+box.appendChild(x);
+
+});
+
+
+let first=
+new Date(year,mon,1).getDay();
+
+let totalDays=
+new Date(year,mon+1,0).getDate();
+
+
+for(let i=0;i<first;i++){
+
+let x=
+document.createElement("div");
+
+x.className="calendar-day";
+
+x.style.visibility="hidden";
+
+box.appendChild(x);
+
+}
+
+
+let today=new Date();
+
+
+for(let d=1;d<=totalDays;d++){
+
+let x=
+document.createElement("div");
+
+x.className="calendar-day";
+
+
+if(
+d===today.getDate() &&
+mon===today.getMonth() &&
+year===today.getFullYear()
+){
+
+x.classList.add("today");
+
+}
+
+
+let date=
+year+"-"+
+String(mon+1).padStart(2,"0")+
+"-"+
+String(d).padStart(2,"0");
+
+
+let count=
+tasks.filter(t=>t.date===date).length;
+
+
+let number=
+document.createElement("b");
+
+number.textContent=d;
+
+x.appendChild(number);
+
+
+if(count){
+
+let small=
+document.createElement("small");
+
+small.textContent=
+"📚 "+count+" task(s)";
+
+x.appendChild(small);
+
+}
+
+
+x.onclick=()=>{
+
+let dayTasks=
+tasks.filter(t=>t.date===date);
+
+
+document.getElementById("selected")
+.textContent=
+"📅 "+date+" — "+
+(
+dayTasks.length?
+dayTasks.length+" task(s)":
+"No tasks"
+);
+
+};
+
+
+box.appendChild(x);
+
+}
+
+}
+
+
+function toggleDark(){
+
+document.body.classList.toggle("dark");
+
+localStorage.setItem(
+"dark",
+document.body.classList.contains("dark")?
+"1":
+"0"
+);
+
+}
+
+
+function backup(){
+
+let data={
+
+subjects,
+tasks,
+schedules,
+reminders,
+goalMinutes,
+todayMinutes,
+streak,
+lastStudy,
+
+name:
+localStorage.getItem("name")||"",
+
+notes:
+localStorage.getItem("notes")||""
+
+};
+
+
+let blob=
+new Blob(
+[JSON.stringify(data,null,2)],
+{type:"application/json"}
+);
+
+
+let a=
+document.createElement("a");
+
+a.href=
+URL.createObjectURL(blob);
+
+a.download=
+"studymate-backup.json";
+
+a.click();
+
+}
+
+
+document.getElementById("restore")
+.onchange=function(){
+
+let file=this.files[0];
+
+if(!file)return;
+
+
+let reader=
+new FileReader();
+
+
+reader.onload=function(e){
+
+try{
+
+let d=
+JSON.parse(e.target.result);
+
+
+subjects=d.subjects||[];
+
+tasks=d.tasks||[];
+
+schedules=d.schedules||[];
+
+reminders=d.reminders||[];
+
+goalMinutes=d.goalMinutes||60;
+
+todayMinutes=d.todayMinutes||0;
+
+streak=d.streak||0;
+
+lastStudy=d.lastStudy||"";
+
+
+localStorage.setItem(
+"name",
+d.name||""
+);
+
+localStorage.setItem(
+"notes",
+d.notes||""
+);
+
+
+save();
+
+load();
+
+alert("✅ Backup restored!");
+
+}
+
+catch{
+
+alert("❌ Invalid backup file.");
+
+}
+
+};
+
+
+reader.readAsText(file);
+
+};
+
+
+function load(){
+
+let n=
+localStorage.getItem("name");
+
+if(n)
+
+document.getElementById("welcome")
+.textContent=
+"👋 Welcome, "+n+"!";
+
+
+let notes=
+localStorage.getItem("notes");
+
+if(notes)
+
+document.getElementById("notes")
+.value=notes;
+
+
+if(
+localStorage.getItem("dark")==="1"
+)
+
+document.body.classList.add("dark");
+
+
+showSubjects();
+
+updateSelectors();
+
+showTasks();
+
+showSchedule();
+
+showReminders();
+
+showTimer();
+
+showStreak();
+
+updateProgress();
+
+calendar();
+
+showToday();
+
+}
+
+
+load();
+
+</script>
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./sw.js")
+      .then(() => console.log("StudyMate offline mode ready"))
+      .catch(error => console.log("Service Worker error:", error));
+  });
+}
+</script>
+</body>
+</html>
